@@ -27,8 +27,7 @@ module Surveyor
       else
         @survey = surveys.where(:survey_version => params[:survey_version]).first
       end
-      @response_set = ResponseSet.
-        create(:survey => @survey, :user_id => (@current_user.nil? ? @current_user : @current_user.id))
+      create_response_set
       if (@survey && @response_set)
         flash[:notice] = t('surveyor.survey_started_success')
         redirect_to(surveyor.edit_my_survey_path(
@@ -94,6 +93,10 @@ module Surveyor
           end
         end
       end
+    end
+
+    def create_response_set
+      @response_set = ResponseSet.create(:survey => @survey, :user_id => (@current_user.nil? ? @current_user : @current_user.id))
     end
 
     def delete_response
