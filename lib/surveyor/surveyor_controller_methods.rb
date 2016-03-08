@@ -73,7 +73,10 @@ module Surveyor
       question_ids_for_dependencies = (params[:r] || []).map{|k,v| v["question_id"] }.compact.uniq
       saved = load_and_update_response_set_with_retries
 
-      return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey')) if saved && params[:finish]
+      if saved && params[:finish]
+        surveyor_before_update_redirect
+        return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey'))
+      end
 
       respond_to do |format|
         format.html do
@@ -180,7 +183,7 @@ module Surveyor
       @render_context = render_context
     end
 
-     def set_locale
+    def set_locale
       if params[:new_locale]
         I18n.locale = params[:new_locale]
       elsif params[:locale]
@@ -210,6 +213,11 @@ module Surveyor
     def surveyor_index
       surveyor.available_surveys_path
     end
+
+    def surveyor_before_update_redirect
+      # Available as a hook method to perform app specific functionality with a given response_set
+    end
+
     def surveyor_finish
       surveyor.available_surveys_path
     end
