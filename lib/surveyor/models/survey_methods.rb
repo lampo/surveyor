@@ -14,6 +14,7 @@ module Surveyor
         has_many :response_sets
         has_many :translations, :class_name => "SurveyTranslation"
         attr_accessible *PermittedParams.new.survey_attributes if defined? ActiveModel::MassAssignmentSecurity
+        default_scope { order(survey_version: :desc, display_order: :asc) }
 
         # Validations
         validates_presence_of :title
@@ -78,7 +79,7 @@ module Surveyor
       end
 
       def increment_version
-        surveys = self.class.select(:survey_version).where(:access_code => access_code).order("survey_version DESC")
+        surveys = self.class.select(:survey_version).where(:access_code => access_code).reorder(survey_version: :desc)
         next_version = surveys.any? ? surveys.first.survey_version.to_i + 1 : 0
 
         self.survey_version = next_version

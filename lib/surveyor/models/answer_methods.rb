@@ -13,6 +13,7 @@ module Surveyor
         has_many :responses
         has_many :validations, :dependent => :destroy
         attr_accessible *PermittedParams.new.answer_attributes if defined? ActiveModel::MassAssignmentSecurity
+        default_scope { order(display_order: :asc) }
 
         # Validations
         validates_presence_of :text

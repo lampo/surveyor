@@ -11,6 +11,7 @@ module Surveyor
         has_many :responses
         belongs_to :survey
         attr_accessible *PermittedParams.new.survey_section_attributes if defined? ActiveModel::MassAssignmentSecurity
+        default_scope { order(display_order: :asc) }
 
         # Validations
         validates_presence_of :title, :display_order
