@@ -16,6 +16,7 @@ module Surveyor
         has_one :dependency, :dependent => :destroy
         belongs_to :correct_answer, :class_name => "Answer", :dependent => :destroy
         attr_accessible *PermittedParams.new.question_attributes if defined? ActiveModel::MassAssignmentSecurity
+        default_scope { order(display_order: :asc) }
 
         # Validations
         validates_presence_of :text, :display_order

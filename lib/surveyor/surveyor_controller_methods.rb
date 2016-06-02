@@ -21,7 +21,7 @@ module Surveyor
     end
 
     def create
-      surveys = Survey.where(:access_code => params[:survey_code]).order("survey_version DESC")
+      surveys = Survey.where(:access_code => params[:survey_code]).reorder(survey_version: :desc)
       if params[:survey_version].blank?
         @survey = surveys.first
       else
@@ -148,7 +148,7 @@ module Surveyor
     private :load_and_update_response_set
 
     def export
-      surveys = Survey.where(:access_code => params[:survey_code]).order("survey_version DESC")
+      surveys = Survey.where(:access_code => params[:survey_code]).reorder(survey_version: :desc)
       s = params[:survey_version].blank? ? surveys.first : surveys.where(:survey_version => params[:survey_version]).first
       render_404 and return if s.blank?
       @survey = s.filtered_for_json
